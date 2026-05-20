@@ -10,7 +10,7 @@
 
 **sv.autoclick** — это терминально-стилизованный комплекс автоматизации, базирующийся на алгоритмах компьютерного зрения (OpenCV). Программа предоставляет мощный движок сканирования экрана с поддержкой скрытого внедрения инпутов (Background Protocol) и модулями обхода эвристического анализа.
 
-[Скачать релиз](https://github.com/fal1sev4n/sv.autoclick/releases) • [Сообщить об ошибке](https://github.com/fal1sev4n/sv.autoclick/issues)
+[Скачать релиз](https://github.com/KrekerDM/sv.autoclick/releases) • [Сообщить об ошибке](https://github.com/KrekerDM/sv.autoclick/issues)
 
 <br/>
 
