@@ -14,6 +14,20 @@ import shutil
 import random
 import sys
 
+BG_COLOR = "#121212"
+CARD_COLOR = "#1E1E1E"
+PRIMARY = "#8AB4F8"
+PRIMARY_HOVER = "#AECBFA"
+DANGER = "#F28B82"
+DANGER_HOVER = "#F6AEA9"
+TEXT_MAIN = "#E8EAED"
+TEXT_SUB = "#9AA0A6"
+CORNER_RADIUS = 8
+
+FONT_MAIN = ("Roboto", 14)
+FONT_TITLE = ("Roboto", 20, "bold")
+FONT_SUB = ("Roboto", 12)
+
 def gth(n):
     if getattr(sys, 'frozen', False):
         m = getattr(sys, '_MEIPASS', os.path.dirname(sys.executable))
@@ -27,43 +41,43 @@ fl_cfg = "phantom_config.json"
 
 dx = {
     "en": {
-        "t": "sv.autoclick 0.1.0", "s": "[ SNIP ]", "i": "[ IMPORT ]", "f7": "[ RUN: F7 ]", "f8": "[ HALT: F8 ]", "tb": "TARGET_DB//", 
-        "sb": "SYS: STANDBY", "ac": "SYS: ACTIVE", "p": "> SYS.CFG", "ec": "SYS_CONFIG", "im": "INPUT_PROTOCOL:",
-        "act": "ACTION:", "sen": "SENSITIVITY: {v:.2f}", "cd": "COOLDOWN: {v:.1f}s", "ab": "ARIRAL_STEALTH", 
-        "hw": "VISION_DEBUG", "rsr": "SET_SCAN_REGION", "rrc": "RESET_REGION",
-        "lang": "LANG_SYS:", "help": "[ DOCS ]", "h_title": "=== SV.AUTOCLICK_MANUAL.TXT ===",
-        "h_snip": "> [ SNIP ]\n  Captures a region of your screen to use as a target.",
-        "h_import": "> [ IMPORT ]\n  Loads existing images (.png, .jpg) into target db.",
-        "h_f7": "> [ RUN ]\n  Begins the autonomous scanning engine.",
-        "h_f8": "> [ HALT ]\n  Halts the engine immediately.",
-        "h_bank": "> TARGET_DB\n  Toggle checkboxes to enable/disable targets.",
-        "h_click": "> INPUT_PROTOCOL\n  'physical' hijacks OS mouse. 'background' injects hidden WIN32 events.",
-        "h_act": "> ACTION\n  Choose left_click, right_click, or double_click.",
-        "h_sens": "> SENSITIVITY\n  Higher = exact pixel match. Lower = loose recognition.",
-        "h_cd": "> COOLDOWN\n  Delay between consecutive clicks on identical coordinates.",
-        "h_ab": "> ARIRAL_STEALTH\n  Humanizes behavior (random offsets & delays) to evade anti-cheat.",
-        "h_hw": "> VISION_DEBUG\n  Opens overlay showing what exactly the script sees.",
-        "h_reg": "> SCAN_REGION\n  Limits scanning to specific area, vastly improving FPS.",
+        "t": "sv.autoclick", "s": "SNIP", "i": "IMPORT", "f7": "RUN (F7)", "f8": "HALT (F8)", "tb": "TARGET_DB", 
+        "sb": "SYS: STANDBY", "ac": "SYS: ACTIVE", "p": "Settings", "ec": "System Configuration", "im": "Input Protocol:",
+        "act": "Action:", "sen": "Sensitivity: {v:.2f}", "cd": "Cooldown: {v:.1f}s", "ab": "Ariral Stealth", 
+        "hw": "Vision Debug", "rsr": "Set Scan Region", "rrc": "Reset Region",
+        "lang": "Language:", "help": "Docs", "h_title": "sv.autoclick - Manual",
+        "h_snip": "• SNIP\n  Captures a region of your screen to use as a target.",
+        "h_import": "• IMPORT\n  Loads existing images (.png, .jpg) into target db.",
+        "h_f7": "• RUN\n  Begins the autonomous scanning engine.",
+        "h_f8": "• HALT\n  Halts the engine immediately.",
+        "h_bank": "• TARGET_DB\n  Toggle switches to enable/disable targets.",
+        "h_click": "• INPUT PROTOCOL\n  'physical' hijacks OS mouse. 'background' injects hidden WIN32 events.",
+        "h_act": "• ACTION\n  Choose left, right, or double click.",
+        "h_sens": "• SENSITIVITY\n  Higher = exact pixel match. Lower = loose recognition.",
+        "h_cd": "• COOLDOWN\n  Delay between consecutive clicks on identical coordinates.",
+        "h_ab": "• ARIRAL STEALTH\n  Humanizes behavior (random offsets & delays) to evade anti-cheat.",
+        "h_hw": "• VISION DEBUG\n  Opens overlay showing what exactly the script sees.",
+        "h_reg": "• SCAN REGION\n  Limits scanning to specific area, vastly improving FPS.",
         "egg": "SIGNAL INTERCEPTED: The developer of this program probably loves shrimp, hmm... Does it make sense now?"
     },
     "ru": {
-        "t": "sv.autoclick 0.1.0", "s": "[ СНИП ]", "i": "[ ИМПОРТ ]", "f7": "[ ЗАПУСК: F7 ]", "f8": "[ СТОП: F8 ]", "tb": "TARGET_DB//", 
-        "sb": "SYS: ОЖИДАНИЕ", "ac": "SYS: АКТИВНО", "p": "> SYS.CFG", "ec": "SYS_CONFIG", "im": "ПРОТОКОЛ_ВВОДА:",
-        "act": "ДЕЙСТВИЕ:", "sen": "ЧУВСТВ.: {v:.2f}", "cd": "ЗАДЕРЖКА: {v:.1f}s", "ab": "ARIRAL_STEALTH", 
-        "hw": "VISION_DEBUG", "rsr": "ЗАДАТЬ_ЗОНУ", "rrc": "СБРОС_ЗОНЫ",
-        "lang": "LANG_SYS:", "help": "[ DOCS ]", "h_title": "=== SV.AUTOCLICK_MANUAL.TXT ===",
-        "h_snip": "> [ СНИП ]\n  Вырезает фрагмент экрана и сохраняет как цель.",
-        "h_import": "> [ ИМПОРТ ]\n  Загрузка сторонних файлов (.png, .jpg) в базу.",
-        "h_f7": "> [ ЗАПУСК ]\n  Активирует ядро технического зрения.",
-        "h_f8": "> [ СТОП ]\n  Экстренная остановка всех процессов.",
-        "h_bank": "> TARGET_DB\n  Управление целями. Снимите галочку, чтобы игнорировать файл.",
-        "h_click": "> ПРОТОКОЛ_ВВОДА\n  'physical' использует мышь. 'background' скрыто шлет сигналы окну.",
-        "h_act": "> ДЕЙСТВИЕ\n  Левый, Правый клик или Двойной.",
-        "h_sens": "> ЧУВСТВИТЕЛЬНОСТЬ\n  Высокая = строгий поиск. Низкая = находит похожие пиксели.",
-        "h_cd": "> ЗАДЕРЖКА\n  Перерыв между повторными кликами в ту же цель.",
-        "h_ab": "> ARIRAL_STEALTH\n  Рандомизирует смещение клика и тайминги ради обхода блокировок.",
-        "h_hw": "> VISION_DEBUG\n  Окно отладки. Показывает алгоритм распознавания CV2.",
-        "h_reg": "> ЗОНА_СКАНИРОВАНИЯ\n  Сужает радиус поиска, многократно повышая FPS.",
+        "t": "sv.autoclick", "s": "СНИМОК", "i": "ИМПОРТ", "f7": "ЗАПУСК (F7)", "f8": "СТОП (F8)", "tb": "БАЗА ЦЕЛЕЙ", 
+        "sb": "СТАТУС: ОЖИДАНИЕ", "ac": "СТАТУС: АКТИВНО", "p": "Настройки", "ec": "Конфигурация", "im": "Протокол ввода:",
+        "act": "Действие:", "sen": "Чувствительность: {v:.2f}", "cd": "Задержка: {v:.1f}s", "ab": "Ariral Stealth (Анти-детект)", 
+        "hw": "Отладка зрения (Debug)", "rsr": "Задать зону сканирования", "rrc": "Сбросить зону",
+        "lang": "Язык:", "help": "Справка", "h_title": "sv.autoclick - Руководство",
+        "h_snip": "• СНИМОК\n  Вырезает фрагмент экрана и сохраняет как цель.",
+        "h_import": "• ИМПОРТ\n  Загрузка сторонних файлов (.png, .jpg) в базу.",
+        "h_f7": "• ЗАПУСК\n  Активирует ядро технического зрения.",
+        "h_f8": "• СТОП\n  Экстренная остановка всех процессов.",
+        "h_bank": "• БАЗА ЦЕЛЕЙ\n  Управление целями. Отключите тумблер, чтобы игнорировать файл.",
+        "h_click": "• ПРОТОКОЛ ВВОДА\n  'physical' использует мышь. 'background' скрыто шлет сигналы окну.",
+        "h_act": "• ДЕЙСТВИЕ\n  Левый, Правый клик или Двойной.",
+        "h_sens": "• ЧУВСТВИТЕЛЬНОСТЬ\n  Высокая = строгий поиск. Низкая = находит похожие пиксели.",
+        "h_cd": "• ЗАДЕРЖКА\n  Перерыв между повторными кликами в ту же цель.",
+        "h_ab": "• ARIRAL STEALTH\n  Рандомизирует смещение клика и тайминги ради обхода блокировок.",
+        "h_hw": "• ОТЛАДКА ЗРЕНИЯ\n  Окно отладки. Показывает алгоритм распознавания CV2.",
+        "h_reg": "• ЗОНА СКАНИРОВАНИЯ\n  Сужает радиус поиска, многократно повышая FPS.",
         "egg": "ПЕРЕХВАТ СИГНАЛА: Наверное разработчик этой программы любит креветки, хмм, есть ли в этом смысл?"
     }
 }
@@ -117,14 +131,14 @@ class Tomato:
             self.rn = True
             l = self.p.cabbage("lang")
             if l not in dx: l = "en"
-            self.cb(dx[l]["ac"], "#FFB347")
+            self.cb(dx[l]["ac"], PRIMARY)
             threading.Thread(target=self.celery, daemon=True).start()
 
     def zucchini(self):
         self.rn = False
         l = self.p.cabbage("lang")
         if l not in dx: l = "en"
-        self.cb(dx[l]["sb"], "#737373")
+        self.cb(dx[l]["sb"], TEXT_SUB)
 
     def cucumber(self, x, y, a):
         if a == "left_click": pyautogui.click(int(x), int(y))
@@ -220,11 +234,11 @@ class Tomato:
                 sh = dbg.shape
                 sc = 800 / max(sh[0], sh[1])
                 if sc < 1: dbg = cv2.resize(dbg, (int(sh[1]*sc), int(sh[0]*sc)))
-                cv2.imshow("VISION_DEBUG_TERMINAL", dbg)
+                cv2.imshow("VISION DEBUG", dbg)
                 cv2.waitKey(1)
                 wa = True
             elif wa:
-                try: cv2.destroyWindow("VISION_DEBUG_TERMINAL")
+                try: cv2.destroyWindow("VISION DEBUG")
                 except: pass
                 wa = False
             
@@ -243,7 +257,7 @@ class Carrot(ctk.CTk):
         
         self.title("sv.autoclick")
         self.geometry("450x640")
-        self.configure(fg_color="#050505")
+        self.configure(fg_color=BG_COLOR)
         self.resizable(False, False)
         self.attributes('-topmost', True)
         self.after(200, lambda: self.squash(self))
@@ -275,48 +289,69 @@ class Carrot(ctk.CTk):
             t = ctk.CTkToplevel(self)
             t.title("???")
             t.geometry("380x120")
-            t.configure(fg_color="#050505")
+            t.configure(fg_color=BG_COLOR)
             t.attributes('-topmost', True)
-            ctk.CTkLabel(t, text=dx[lg]["egg"], font=("Consolas", 12, "italic"), text_color="#FFB347", wraplength=350).pack(expand=True)
+            ctk.CTkLabel(t, text=dx[lg]["egg"], font=FONT_SUB, text_color=PRIMARY, wraplength=350).pack(expand=True)
 
     def pumpkin(self):
-        h = ctk.CTkFrame(self, fg_color="#050505", corner_radius=0)
-        h.pack(fill="x", pady=(20, 10), padx=20)
-        self.l_t = ctk.CTkLabel(h, text="", font=("Consolas", 24, "bold"), text_color="#FFB347")
+        h_top = ctk.CTkFrame(self, fg_color="transparent")
+        h_top.pack(fill="x", padx=15, pady=(20, 5))
+        
+        self.l_t = ctk.CTkLabel(h_top, text="", font=FONT_TITLE, text_color=TEXT_MAIN)
         self.l_t.pack(side="left")
         self.l_t.bind("<Button-1>", self.celery_click)
         
-        self.b_hz = ctk.CTkButton(h, text="", width=40, font=("Consolas", 14), fg_color="#111111", border_color="#FFB347", border_width=1, hover_color="#CC8822", text_color="#FFB347", command=self.onion_help, corner_radius=0)
-        self.b_hz.pack(side="right", padx=(10, 0))
+        self.b_hz = ctk.CTkButton(h_top, text="?", width=32, height=32, font=FONT_MAIN, 
+                                  fg_color=CARD_COLOR, hover_color="#2A2A2A", text_color=TEXT_SUB, 
+                                  command=self.onion_help, corner_radius=CORNER_RADIUS)
+        self.b_hz.pack(side="right", padx=(5, 0))
         
-        self.b_cfg = ctk.CTkButton(h, text="[CFG]", width=40, font=("Consolas", 14), fg_color="#111111", border_color="#FFB347", border_width=1, hover_color="#CC8822", text_color="#FFB347", command=self.bean, corner_radius=0)
+        self.b_cfg = ctk.CTkButton(h_top, text="⚙", width=32, height=32, font=("Roboto", 16), 
+                                   fg_color=CARD_COLOR, hover_color="#2A2A2A", text_color=TEXT_SUB, 
+                                   command=self.bean, corner_radius=CORNER_RADIUS)
         self.b_cfg.pack(side="right")
-
-        f = ctk.CTkFrame(self, fg_color="#0a0a0a", border_color="#FFB347", border_width=1, corner_radius=0)
-        f.pack(fill="x", padx=20, pady=10)
         
-        bf = ctk.CTkFrame(f, fg_color="transparent")
-        bf.pack(fill="x", padx=10, pady=(15, 10))
-        self.b_snip = ctk.CTkButton(bf, text="", font=("Consolas", 14, "bold"), fg_color="#111111", border_color="#FFB347", border_width=1, hover_color="#CC8822", text_color="#FFB347", command=self.corn, corner_radius=0, height=36)
-        self.b_snip.pack(side="left", padx=5, expand=True, fill="x")
-        self.b_imp = ctk.CTkButton(bf, text="", font=("Consolas", 14, "bold"), fg_color="#111111", border_color="#FFB347", border_width=1, hover_color="#CC8822", text_color="#FFB347", command=self.carrot_import, corner_radius=0, height=36)
-        self.b_imp.pack(side="right", padx=5, expand=True, fill="x")
+        t_card = ctk.CTkFrame(self, fg_color=CARD_COLOR, corner_radius=CORNER_RADIUS)
+        t_card.pack(fill="both", expand=True, padx=15, pady=(10, 15))
         
-        b = ctk.CTkFrame(f, fg_color="transparent")
-        b.pack(fill="x", pady=(0, 15), padx=15)
-        self.b_f7 = ctk.CTkButton(b, text="", font=("Consolas", 14, "bold"), fg_color="#111111", border_color="#FFB347", border_width=1, hover_color="#CC8822", text_color="#FFB347", command=self.tom.eggplant, corner_radius=0)
-        self.b_f7.pack(side="left", expand=True, padx=(0, 5))
-        self.b_f8 = ctk.CTkButton(b, text="", font=("Consolas", 14, "bold"), fg_color="#111111", border_color="#FF0000", border_width=1, hover_color="#8B0000", text_color="#FF0000", command=self.tom.zucchini, corner_radius=0)
-        self.b_f8.pack(side="right", expand=True, padx=(5, 0))
+        t_head = ctk.CTkFrame(t_card, fg_color="transparent")
+        t_head.pack(fill="x", padx=15, pady=(15, 10))
+        
+        self.l_tb = ctk.CTkLabel(t_head, text="", font=FONT_MAIN, text_color=TEXT_MAIN)
+        self.l_tb.pack(side="left")
+        
+        self.b_imp = ctk.CTkButton(t_head, text="", width=60, font=("Roboto", 11, "bold"), fg_color="#333333", 
+                                   hover_color="#444444", text_color=TEXT_MAIN, 
+                                   command=self.carrot_import, corner_radius=CORNER_RADIUS, height=28)
+        self.b_imp.pack(side="right")
+        
+        self.b_snip = ctk.CTkButton(t_head, text="", width=60, font=("Roboto", 11, "bold"), fg_color=PRIMARY, 
+                                    hover_color=PRIMARY_HOVER, text_color="#121212", 
+                                    command=self.corn, corner_radius=CORNER_RADIUS, height=28)
+        self.b_snip.pack(side="right", padx=(0, 5))
 
-        self.l_tb = ctk.CTkLabel(self, text="", font=("Consolas", 14, "bold"), text_color="#FFB347")
-        self.l_tb.pack(anchor="w", padx=20, pady=(10, 5))
-        self.tl = ctk.CTkScrollableFrame(self, fg_color="#0a0a0a", border_color="#FFB347", border_width=1, corner_radius=0)
-        self.tl.pack(fill="both", expand=True, padx=20, pady=0)
+        self.tl = ctk.CTkScrollableFrame(t_card, fg_color="transparent")
+        self.tl.pack(fill="both", expand=True, padx=5, pady=(0, 10))
         self.lettuce()
+        
+        a_card = ctk.CTkFrame(self, fg_color=CARD_COLOR, corner_radius=CORNER_RADIUS)
+        a_card.pack(fill="x", padx=15, pady=(0, 20))
+        
+        self.sl = ctk.CTkLabel(a_card, text="", font=FONT_SUB, text_color=TEXT_SUB)
+        self.sl.pack(pady=(15, 5))
 
-        self.sl = ctk.CTkLabel(self, text="", font=("Consolas", 14, "bold"), text_color="#737373")
-        self.sl.pack(pady=10)
+        ab = ctk.CTkFrame(a_card, fg_color="transparent")
+        ab.pack(fill="x", padx=15, pady=(5, 15))
+
+        self.b_f7 = ctk.CTkButton(ab, text="", font=("Roboto", 15, "bold"), fg_color=PRIMARY, 
+                                  hover_color=PRIMARY_HOVER, text_color="#121212", 
+                                  command=self.tom.eggplant, corner_radius=CORNER_RADIUS, height=45)
+        self.b_f7.pack(side="left", expand=True, fill="x", padx=(0, 5))
+        
+        self.b_f8 = ctk.CTkButton(ab, text="", font=("Roboto", 15, "bold"), fg_color="transparent", 
+                                  border_color=DANGER, border_width=2, hover_color="#331816", text_color=DANGER, 
+                                  command=self.tom.zucchini, corner_radius=CORNER_RADIUS, height=45)
+        self.b_f8.pack(side="right", expand=True, fill="x", padx=(5, 0))
 
     def onion_help(self):
         lg = self.pot.cabbage("lang")
@@ -324,15 +359,15 @@ class Carrot(ctk.CTk):
         d = dx[lg]
         s = ctk.CTkToplevel(self)
         s.title(d["h_title"])
-        s.geometry("550x700")
-        s.configure(fg_color="#050505")
+        s.geometry("550x650")
+        s.configure(fg_color=BG_COLOR)
         s.attributes('-topmost', True)
         s.after(200, lambda: self.squash(s))
         
-        scr = ctk.CTkScrollableFrame(s, fg_color="#0a0a0a", border_color="#FFB347", border_width=1, corner_radius=0)
+        scr = ctk.CTkScrollableFrame(s, fg_color=BG_COLOR)
         scr.pack(fill="both", expand=True, padx=15, pady=15)
         
-        ctk.CTkLabel(scr, text=d["h_title"], font=("Consolas", 20, "bold"), text_color="#FFB347").pack(pady=15)
+        ctk.CTkLabel(scr, text=d["h_title"], font=FONT_TITLE, text_color=PRIMARY).pack(pady=(10, 20))
         
         hi = [
             "h_snip", "h_import", "h_f7", "h_f8", "h_bank", "h_click",
@@ -340,7 +375,9 @@ class Carrot(ctk.CTk):
         ]
         
         for hk in hi:
-            ctk.CTkLabel(scr, text=d[hk], font=("Consolas", 13), text_color="#FFB347", wraplength=480, justify="left").pack(anchor="w", padx=10, pady=(10, 5))
+            card = ctk.CTkFrame(scr, fg_color=CARD_COLOR, corner_radius=CORNER_RADIUS)
+            card.pack(fill="x", pady=5)
+            ctk.CTkLabel(card, text=d[hk], font=FONT_SUB, text_color=TEXT_MAIN, wraplength=480, justify="left").pack(anchor="w", padx=15, pady=10)
 
     def ol(self):
         lg = self.pot.cabbage("lang")
@@ -352,11 +389,10 @@ class Carrot(ctk.CTk):
         self.b_f7.configure(text=d["f7"])
         self.b_f8.configure(text=d["f8"])
         self.l_tb.configure(text=d["tb"])
-        self.b_hz.configure(text=d["help"])
         if not self.tom.rn:
-            self.sl.configure(text=d["sb"], text_color="#737373")
+            self.sl.configure(text=d["sb"], text_color=TEXT_SUB)
         else:
-            self.sl.configure(text=d["ac"], text_color="#FFB347")
+            self.sl.configure(text=d["ac"], text_color=PRIMARY)
 
     def carrot_import(self):
         from customtkinter import filedialog
@@ -388,66 +424,88 @@ class Carrot(ctk.CTk):
         
         s = ctk.CTkToplevel(self)
         s.title(d["p"])
-        s.geometry("440x620")
-        s.configure(fg_color="#050505")
+        s.geometry("450x700")
+        s.configure(fg_color=BG_COLOR)
         s.attributes('-topmost', True)
         s.after(200, lambda: self.squash(s))
             
-        f = ctk.CTkFrame(s, fg_color="#0a0a0a", border_color="#FFB347", border_width=1, corner_radius=0)
-        f.pack(fill="both", expand=True, padx=15, pady=20)
+        scr = ctk.CTkScrollableFrame(s, fg_color=BG_COLOR)
+        scr.pack(fill="both", expand=True)
+
+        ctk.CTkLabel(scr, text=d["ec"], font=FONT_TITLE, text_color=TEXT_MAIN).pack(pady=(20, 15), anchor="w", padx=15)
         
-        ctk.CTkLabel(f, text=d["ec"], font=("Consolas", 16, "bold"), text_color="#FFB347").pack(pady=15, anchor="w", padx=15)
-        
-        ctk.CTkLabel(f, text=d["lang"], font=("Consolas", 12), text_color="#FFB347").pack(anchor="w", padx=15)
+        c1 = ctk.CTkFrame(scr, fg_color=CARD_COLOR, corner_radius=CORNER_RADIUS)
+        c1.pack(fill="x", padx=15, pady=5)
+        ctk.CTkLabel(c1, text=d["lang"], font=FONT_SUB, text_color=TEXT_SUB).pack(anchor="w", padx=15, pady=(15, 5))
         lv = ctk.StringVar(value=lg)
         def lu(v):
             self.pot.broccoli("lang", v)
             self.ol()
             s.destroy()
             self.bean()
-        cl = ctk.CTkComboBox(f, values=["ru", "en"], variable=lv, font=("Consolas", 12), fg_color="#111111", border_color="#FFB347", button_color="#FFB347", text_color="#FFB347", corner_radius=0, command=lu, dropdown_fg_color="#050505", dropdown_hover_color="#CC8822", dropdown_text_color="#FFB347", dropdown_font=("Consolas", 12))
-        cl.pack(fill="x", padx=15, pady=5)
+        cl = ctk.CTkComboBox(c1, values=["ru", "en"], variable=lv, font=FONT_MAIN, 
+                             fg_color="#2A2A2A", border_width=0, button_color="#2A2A2A", 
+                             button_hover_color="#333333", text_color=TEXT_MAIN, corner_radius=CORNER_RADIUS, 
+                             command=lu, dropdown_fg_color=CARD_COLOR, dropdown_hover_color="#333333", dropdown_text_color=TEXT_MAIN)
+        cl.pack(fill="x", padx=15, pady=(0, 15))
         
-        ctk.CTkLabel(f, text=d["im"], font=("Consolas", 12), text_color="#FFB347").pack(anchor="w", padx=15, pady=(10, 0))
+        c2 = ctk.CTkFrame(scr, fg_color=CARD_COLOR, corner_radius=CORNER_RADIUS)
+        c2.pack(fill="x", padx=15, pady=10)
+        
+        ctk.CTkLabel(c2, text=d["im"], font=FONT_SUB, text_color=TEXT_SUB).pack(anchor="w", padx=15, pady=(15, 5))
         mv = ctk.StringVar(value=self.pot.cabbage("click_mode"))
-        cb = ctk.CTkComboBox(f, values=["background", "physical"], variable=mv, font=("Consolas", 12), fg_color="#111111", border_color="#FFB347", button_color="#FFB347", text_color="#FFB347", corner_radius=0, command=lambda v: self.pot.broccoli("click_mode", v), dropdown_fg_color="#050505", dropdown_hover_color="#CC8822", dropdown_text_color="#FFB347", dropdown_font=("Consolas", 12))
-        cb.pack(fill="x", padx=15, pady=5)
+        cb = ctk.CTkComboBox(c2, values=["background", "physical"], variable=mv, font=FONT_MAIN, 
+                             fg_color="#2A2A2A", border_width=0, button_color="#2A2A2A", button_hover_color="#333333", text_color=TEXT_MAIN, corner_radius=CORNER_RADIUS, 
+                             command=lambda v: self.pot.broccoli("click_mode", v), dropdown_fg_color=CARD_COLOR, dropdown_hover_color="#333333")
+        cb.pack(fill="x", padx=15, pady=(0, 10))
         
-        ctk.CTkLabel(f, text=d["act"], font=("Consolas", 12), text_color="#FFB347").pack(anchor="w", padx=15, pady=(5, 0))
+        ctk.CTkLabel(c2, text=d["act"], font=FONT_SUB, text_color=TEXT_SUB).pack(anchor="w", padx=15, pady=5)
         av = ctk.StringVar(value=self.pot.cabbage("action"))
-        cab = ctk.CTkComboBox(f, values=["left_click", "right_click", "double_click"], variable=av, font=("Consolas", 12), fg_color="#111111", border_color="#FFB347", button_color="#FFB347", text_color="#FFB347", corner_radius=0, command=lambda v: self.pot.broccoli("action", v), dropdown_fg_color="#050505", dropdown_hover_color="#CC8822", dropdown_text_color="#FFB347", dropdown_font=("Consolas", 12))
-        cab.pack(fill="x", padx=15, pady=5)
+        cab = ctk.CTkComboBox(c2, values=["left_click", "right_click", "double_click"], variable=av, font=FONT_MAIN, 
+                              fg_color="#2A2A2A", border_width=0, button_color="#2A2A2A", button_hover_color="#333333", text_color=TEXT_MAIN, corner_radius=CORNER_RADIUS, 
+                              command=lambda v: self.pot.broccoli("action", v), dropdown_fg_color=CARD_COLOR, dropdown_hover_color="#333333")
+        cab.pack(fill="x", padx=15, pady=(0, 10))
         
         sv = ctk.StringVar(value=d["sen"].format(v=self.pot.cabbage('sensitivity')))
-        ctk.CTkLabel(f, textvariable=sv, font=("Consolas", 12), text_color="#FFB347").pack(anchor="w", padx=15, pady=(5, 0))
-        sl = ctk.CTkSlider(f, from_=0.1, to=1.0, button_color="#FFB347", progress_color="#CC8822", command=lambda v: (sv.set(d["sen"].format(v=float(v))), self.pot.broccoli("sensitivity", float(v))))
+        sl_lbl = ctk.CTkLabel(c2, textvariable=sv, font=FONT_SUB, text_color=TEXT_SUB)
+        sl_lbl.pack(anchor="w", padx=15, pady=5)
+        sl = ctk.CTkSlider(c2, from_=0.1, to=1.0, button_color=PRIMARY, button_hover_color=PRIMARY_HOVER, progress_color=PRIMARY, 
+                           command=lambda v: (sv.set(d["sen"].format(v=float(v))), self.pot.broccoli("sensitivity", float(v))))
         sl.set(self.pot.cabbage("sensitivity"))
-        sl.pack(fill="x", padx=15, pady=5)
+        sl.pack(fill="x", padx=15, pady=(0, 10))
         
         cv = ctk.StringVar(value=d["cd"].format(v=self.pot.cabbage('cooldown')))
-        ctk.CTkLabel(f, textvariable=cv, font=("Consolas", 12), text_color="#FFB347").pack(anchor="w", padx=15, pady=(5, 0))
-        c_l = ctk.CTkSlider(f, from_=0.0, to=5.0, button_color="#FFB347", progress_color="#CC8822", command=lambda v: (cv.set(d["cd"].format(v=float(v))), self.pot.broccoli("cooldown", float(v))))
+        c_lbl = ctk.CTkLabel(c2, textvariable=cv, font=FONT_SUB, text_color=TEXT_SUB)
+        c_lbl.pack(anchor="w", padx=15, pady=5)
+        c_l = ctk.CTkSlider(c2, from_=0.0, to=5.0, button_color=PRIMARY, button_hover_color=PRIMARY_HOVER, progress_color=PRIMARY, 
+                            command=lambda v: (cv.set(d["cd"].format(v=float(v))), self.pot.broccoli("cooldown", float(v))))
         c_l.set(self.pot.cabbage("cooldown"))
-        c_l.pack(fill="x", padx=15, pady=5)
+        c_l.pack(fill="x", padx=15, pady=(0, 15))
         
-        sf2 = ctk.CTkFrame(s, fg_color="transparent")
-        sf2.pack(fill="x", padx=5, pady=5)
+        c3 = ctk.CTkFrame(scr, fg_color=CARD_COLOR, corner_radius=CORNER_RADIUS)
+        c3.pack(fill="x", padx=15, pady=5)
         
         adv = ctk.BooleanVar(value=self.pot.cabbage("anti_detect"))
-        def tad(): self.pot.broccoli("anti_detect", adv.get())
-        ctk.CTkSwitch(sf2, text=d["ab"], variable=adv, font=("Consolas", 12), command=tad, progress_color="#FFB347", button_color="#050505", button_hover_color="#CC8822", text_color="#FFB347").pack(anchor="w", padx=5, pady=(10, 5))
+        ctk.CTkSwitch(c3, text=d["ab"], variable=adv, font=FONT_MAIN, 
+                      command=lambda: self.pot.broccoli("anti_detect", adv.get()), 
+                      progress_color=PRIMARY, button_color=TEXT_MAIN, button_hover_color=TEXT_MAIN, text_color=TEXT_MAIN).pack(anchor="w", padx=15, pady=(15, 10))
         
         dv = ctk.BooleanVar(value=self.pot.cabbage("debug"))
-        def td(): self.pot.broccoli("debug", dv.get())
-        ctk.CTkSwitch(sf2, text=d["hw"], variable=dv, font=("Consolas", 12), command=td, progress_color="#FFB347", button_color="#050505", button_hover_color="#CC8822", text_color="#FFB347").pack(anchor="w", padx=5, pady=(5, 10))
+        ctk.CTkSwitch(c3, text=d["hw"], variable=dv, font=FONT_MAIN, 
+                      command=lambda: self.pot.broccoli("debug", dv.get()), 
+                      progress_color=PRIMARY, button_color=TEXT_MAIN, button_hover_color=TEXT_MAIN, text_color=TEXT_MAIN).pack(anchor="w", padx=15, pady=(5, 15))
         
-        ctk.CTkButton(s, text=d["rsr"], font=("Consolas", 14), fg_color="#111111", border_color="#FFB347", border_width=1, hover_color="#CC8822", text_color="#FFB347", corner_radius=0, command=self.mushroom).pack(fill="x", padx=30, pady=5)
-        ctk.CTkButton(s, text=d["rrc"], font=("Consolas", 14), fg_color="#111111", border_color="#FF0000", border_width=1, hover_color="#8B0000", text_color="#FF0000", corner_radius=0, command=lambda: self.pot.broccoli("region", None)).pack(fill="x", padx=30, pady=5)
+        c4 = ctk.CTkFrame(scr, fg_color="transparent")
+        c4.pack(fill="x", padx=15, pady=15)
+        ctk.CTkButton(c4, text=d["rsr"], font=FONT_MAIN, fg_color="#333333", hover_color="#444444", text_color=TEXT_MAIN, 
+                      corner_radius=CORNER_RADIUS, height=40, command=self.mushroom).pack(fill="x", pady=(0, 10))
+        ctk.CTkButton(c4, text=d["rrc"], font=FONT_MAIN, fg_color="transparent", border_color=DANGER, border_width=1, hover_color="#331816", text_color=DANGER, 
+                      corner_radius=CORNER_RADIUS, height=40, command=lambda: self.pot.broccoli("region", None)).pack(fill="x", pady=(0, 10))
 
     def pea(self, cb):
         s = ctk.CTkToplevel(self)
         s.attributes('-fullscreen', True)
-        s.attributes('-alpha', 0.15)
+        s.attributes('-alpha', 0.25)
         s.attributes('-topmost', True)
         s.configure(cursor="crosshair")
         c = ctk.CTkCanvas(s, cursor="crosshair", bg="black", highlightthickness=0)
@@ -458,7 +516,7 @@ class Carrot(ctk.CTk):
         def sr(e): p[0], p[1] = e.x, e.y
         def dr(e):
             c.delete("sel")
-            c.create_rectangle(p[0], p[1], e.x, e.y, outline="#FFB347", width=2, tags="sel")
+            c.create_rectangle(p[0], p[1], e.x, e.y, outline=PRIMARY, width=2, tags="sel")
         def er(e):
             p[2], p[3] = e.x, e.y
             s.destroy()
@@ -500,8 +558,8 @@ class Carrot(ctk.CTk):
             p = pt["path"]
             if os.path.exists(p):
                 vt.append(pt)
-                rf = ctk.CTkFrame(self.tl, fg_color="#0a0a0a", border_color="#FFB347", border_width=1, corner_radius=0)
-                rf.pack(fill="x", pady=4, padx=4)
+                rf = ctk.CTkFrame(self.tl, fg_color="#2A2A2A", corner_radius=CORNER_RADIUS)
+                rf.pack(fill="x", pady=5)
                 
                 cv = ctk.BooleanVar(value=pt.get("active", True))
                 def tg(p_ref=p, v_ref=cv):
@@ -511,11 +569,16 @@ class Carrot(ctk.CTk):
                             break
                     self.pot.garlic()
                     
-                cb = ctk.CTkCheckBox(rf, text="", variable=cv, command=tg, width=24, checkbox_width=20, checkbox_height=20, fg_color="#111111", border_color="#FFB347", checkmark_color="#FFB347", hover_color="#CC8822", corner_radius=0)
-                cb.pack(side="left", padx=(10, 0), pady=5)
+                cb = ctk.CTkSwitch(rf, text="", variable=cv, command=tg, switch_width=36, switch_height=20, 
+                                   progress_color=PRIMARY, button_color=TEXT_MAIN, button_hover_color=TEXT_MAIN)
+                cb.pack(side="left", padx=(15, 5), pady=10)
                 
-                ctk.CTkLabel(rf, text=os.path.basename(p), font=("Consolas", 12), text_color="#FFB347").pack(side="left", padx=5, pady=5)
-                ctk.CTkButton(rf, text="[X]", width=30, fg_color="transparent", text_color="#FF0000", hover_color="#8B0000", font=("Consolas", 14, "bold"), corner_radius=0, command=lambda x=pt: self.turnip(x)).pack(side="right", padx=5)
+                fname = os.path.basename(p)
+                if len(fname) > 22: fname = fname[:10] + "..." + fname[-8:]
+                
+                ctk.CTkLabel(rf, text=fname, font=FONT_MAIN, text_color=TEXT_MAIN).pack(side="left", padx=5, pady=10)
+                ctk.CTkButton(rf, text="✕", width=30, height=30, fg_color="transparent", hover_color="#331816", text_color=DANGER, 
+                              font=("Roboto", 16), corner_radius=CORNER_RADIUS, command=lambda x=pt: self.turnip(x)).pack(side="right", padx=10, pady=10)
         
         if len(vt) != len(ts):
             self.pot.broccoli("targets", vt)
@@ -536,5 +599,6 @@ class Carrot(ctk.CTk):
         os._exit(0)
 
 if __name__ == "__main__":
+    ctk.set_appearance_mode("dark")
     c = Carrot()
     c.mainloop()
