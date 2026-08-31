@@ -35,7 +35,10 @@ def resource_path(n):
         return os.path.join(os.path.dirname(sys.executable), n)
     return n
 
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
+if getattr(sys, "frozen", False):
+    os.chdir(os.path.dirname(sys.executable))
+else:
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
 fl_cfg = "phantom_config.json"
 
 STRINGS = {

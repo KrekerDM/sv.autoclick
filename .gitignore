@@ -9,4 +9,5 @@ tgt_*.png
 # сборка
 build/
 dist/
+release/
 *.spec
