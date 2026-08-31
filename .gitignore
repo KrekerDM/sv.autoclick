@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+
+# настройки и цели создаются при работе
+phantom_config.json
+tgt_*.png
+
+# сборка
+build/
+dist/
+*.spec
