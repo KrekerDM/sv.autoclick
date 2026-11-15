@@ -72,11 +72,11 @@ Python 3.10 or newer, Windows only.
 
 ## How to use it
 
-1. **SNIP** — select what the program should look for. Or **IMPORT** if you
+1. **Snip** — select what the program should look for. Or **Import** if you
    already have the picture as a file.
 2. The target appears in the list. The switch beside it turns it off
    temporarily.
-3. **RUN (F7)** starts scanning, **HALT (F8)** stops it. Both keys work while
+3. **Run (F7)** starts scanning, **Halt (F8)** stops it. Both keys work while
    the window is minimised.
 4. While running, the status line shows the click count and the elapsed time.
 

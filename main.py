@@ -357,8 +357,8 @@ class App(ctk.CTk):
                                    command=self.import_targets, corner_radius=CORNER_RADIUS, height=28)
         self.b_imp.pack(side="right")
         
-        self.b_snip = ctk.CTkButton(t_head, text="", width=60, font=FONT_BTN, fg_color=PRIMARY,
-                                    hover_color=PRIMARY_HOVER, text_color=BG_COLOR, 
+        self.b_snip = ctk.CTkButton(t_head, text="", width=60, font=FONT_BTN, fg_color="transparent",
+                                    border_width=1, border_color=HAIRLINE, hover_color=HOVER, text_color=TEXT_MAIN,
                                     command=self.snip_target, corner_radius=CORNER_RADIUS, height=28)
         self.b_snip.pack(side="right", padx=(0, 5))
 
@@ -382,7 +382,7 @@ class App(ctk.CTk):
         self.btn_start.pack(side="left", expand=True, fill="x", padx=(0, 5))
         
         self.btn_stop = ctk.CTkButton(ab, text="", font=FONT_BTN_LG, fg_color="transparent",
-                                  border_color=DANGER, border_width=1, hover_color=HOVER, text_color=DANGER, 
+                                  border_color=HAIRLINE, border_width=1, hover_color=HOVER, text_color=TEXT_MAIN, 
                                   command=self.engine.stop, corner_radius=CORNER_RADIUS, height=45)
         self.btn_stop.pack(side="right", expand=True, fill="x", padx=(5, 0))
 
@@ -411,7 +411,9 @@ class App(ctk.CTk):
         for hk in hi:
             card = ctk.CTkFrame(scr, fg_color=CARD_COLOR, corner_radius=CORNER_RADIUS)
             card.pack(fill="x", pady=5)
-            ctk.CTkLabel(card, text=d[hk], font=FONT_SUB, text_color=TEXT_MAIN, wraplength=480, justify="left").pack(anchor="w", padx=15, pady=10)
+            name, _, text = d[hk].partition("\n")
+            ctk.CTkLabel(card, text=name, font=FONT_MAIN, text_color=TEXT_MAIN, justify="left").pack(anchor="w", padx=15, pady=(10, 0))
+            ctk.CTkLabel(card, text=text, font=FONT_SUB, text_color=TEXT_SUB, wraplength=480, justify="left").pack(anchor="w", padx=15, pady=(2, 10))
 
     def refresh_labels(self):
         lg = self.cfg.get("lang")
@@ -429,6 +431,15 @@ class App(ctk.CTk):
             self.status_label.configure(text=d["sb"], text_color=TEXT_SUB)
         else:
             self.status_label.configure(text=d["ac"], text_color=DANGER)
+        self.paint_stop()
+
+    def paint_stop(self):
+        # Halt takes the one colour only while the engine has the mouse.
+        hot = self.engine.running
+        if getattr(self, "_stop_hot", None) == hot:
+            return
+        self._stop_hot = hot
+        self.btn_stop.configure(border_color=DANGER if hot else HAIRLINE, text_color=DANGER if hot else TEXT_MAIN)
 
     def import_targets(self):
         from customtkinter import filedialog
@@ -469,6 +480,7 @@ class App(ctk.CTk):
                 text=self.strings()["stats"].format(
                     n=self.engine.clicks, t=f"{secs // 60:02d}:{secs % 60:02d}"),
                 text_color=DANGER)
+        self.paint_stop()
         self.after(500, self.tick_stats)
 
     def save_limit(self, widget):
@@ -568,7 +580,8 @@ class App(ctk.CTk):
         dv = ctk.BooleanVar(value=self.cfg.get("debug"))
         ctk.CTkSwitch(c3, text=d["hw"], variable=dv, font=FONT_MAIN,
                       command=lambda: self.cfg.set_value("debug", dv.get()),
-                      fg_color=HAIRLINE, progress_color=PRIMARY, button_color=TEXT_SUB, button_hover_color=TEXT_MAIN,
+                      fg_color=CARD_COLOR, border_width=1, border_color=TEXT_SUB,
+                      progress_color=PRIMARY, button_color=TEXT_SUB, button_hover_color=TEXT_MAIN,
                       corner_radius=CORNER_RADIUS, button_length=0, text_color=TEXT_MAIN).pack(anchor="w", padx=15, pady=(5, 15))
         
         ctk.CTkLabel(c3, text=d["limit"], font=FONT_MAIN, text_color=TEXT_MAIN
@@ -672,7 +685,8 @@ class App(ctk.CTk):
                     self.cfg.save()
                     
                 cb = ctk.CTkSwitch(rf, text="", variable=cv, command=toggle_target, switch_width=36, switch_height=20,
-                                   fg_color=HAIRLINE, progress_color=PRIMARY, button_color=TEXT_SUB, button_hover_color=TEXT_MAIN,
+                                   fg_color=RAISED, border_width=1, border_color=TEXT_SUB,
+                                   progress_color=PRIMARY, button_color=TEXT_SUB, button_hover_color=TEXT_MAIN,
                                    corner_radius=CORNER_RADIUS, button_length=0)
                 cb.pack(side="left", padx=(15, 5), pady=10)
                 
