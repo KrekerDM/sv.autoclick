@@ -24,6 +24,7 @@ def grab(widget, name):
 
 
 def main():
+    app_module.load_fonts()
     app = app_module.App()
     app.update()
     app.attributes("-topmost", True)

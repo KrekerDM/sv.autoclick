@@ -26,6 +26,8 @@ DANGER = "#ff6b4a"
 TEXT_MAIN = "#e6e9ec"
 TEXT_SUB = "#8d96a0"
 CORNER_RADIUS = 0
+# customtkinter 5.2 draws a knob with square corners as a notched polygon; 1 px is the least it draws cleanly.
+KNOB_RADIUS = 1
 
 FONT_MAIN = ("Golos Text", 11)
 FONT_TITLE = ("Golos Text", 18)
@@ -333,12 +335,12 @@ class App(ctk.CTk):
         self.l_t.pack(side="left")
         self.l_t.bind("<Button-1>", self._title_click)
         
-        self.b_hz = ctk.CTkButton(h_top, text="", width=0, height=32, font=FONT_BTN,
+        self.b_hz = ctk.CTkButton(h_top, text="", width=84, height=32, font=FONT_BTN,
                                   fg_color="transparent", border_width=1, border_color=HAIRLINE, hover_color=HOVER,
                                   text_color=TEXT_MAIN, command=self.open_help, corner_radius=CORNER_RADIUS)
         self.b_hz.pack(side="right", padx=(5, 0))
         
-        self.b_cfg = ctk.CTkButton(h_top, text="", width=0, height=32, font=FONT_BTN,
+        self.b_cfg = ctk.CTkButton(h_top, text="", width=84, height=32, font=FONT_BTN,
                                    fg_color="transparent", border_width=1, border_color=HAIRLINE, hover_color=HOVER,
                                    text_color=TEXT_MAIN, command=self.open_settings, corner_radius=CORNER_RADIUS)
         self.b_cfg.pack(side="right", padx=(5, 0))
@@ -560,7 +562,7 @@ class App(ctk.CTk):
         sl_lbl = ctk.CTkLabel(c2, textvariable=sv, font=FONT_SUB, text_color=TEXT_SUB)
         sl_lbl.pack(anchor="w", padx=15, pady=5)
         sens_slider = ctk.CTkSlider(c2, from_=0.1, to=1.0, button_color=PRIMARY, button_hover_color=PRIMARY_HOVER, progress_color=PRIMARY, fg_color=HAIRLINE,
-                           corner_radius=CORNER_RADIUS, button_corner_radius=CORNER_RADIUS,  
+                           corner_radius=CORNER_RADIUS, button_corner_radius=KNOB_RADIUS, button_length=10,
                            command=lambda v: (sv.set(d["sen"].format(v=float(v))), self.cfg.set_value("sensitivity", float(v))))
         sens_slider.set(self.cfg.get("sensitivity"))
         sens_slider.pack(fill="x", padx=15, pady=(0, 10))
@@ -569,7 +571,7 @@ class App(ctk.CTk):
         c_lbl = ctk.CTkLabel(c2, textvariable=cv, font=FONT_SUB, text_color=TEXT_SUB)
         c_lbl.pack(anchor="w", padx=15, pady=5)
         c_l = ctk.CTkSlider(c2, from_=0.0, to=5.0, button_color=PRIMARY, button_hover_color=PRIMARY_HOVER, progress_color=PRIMARY, fg_color=HAIRLINE,
-                           corner_radius=CORNER_RADIUS, button_corner_radius=CORNER_RADIUS,  
+                           corner_radius=CORNER_RADIUS, button_corner_radius=KNOB_RADIUS, button_length=10,
                             command=lambda v: (cv.set(d["cd"].format(v=float(v))), self.cfg.set_value("cooldown", float(v))))
         c_l.set(self.cfg.get("cooldown"))
         c_l.pack(fill="x", padx=15, pady=(0, 15))
@@ -582,7 +584,7 @@ class App(ctk.CTk):
                       command=lambda: self.cfg.set_value("debug", dv.get()),
                       fg_color=CARD_COLOR, border_width=1, border_color=TEXT_SUB,
                       progress_color=PRIMARY, button_color=TEXT_SUB, button_hover_color=TEXT_MAIN,
-                      corner_radius=CORNER_RADIUS, button_length=0, text_color=TEXT_MAIN).pack(anchor="w", padx=15, pady=(5, 15))
+                      corner_radius=KNOB_RADIUS, button_length=12, text_color=TEXT_MAIN).pack(anchor="w", padx=15, pady=(5, 15))
         
         ctk.CTkLabel(c3, text=d["limit"], font=FONT_MAIN, text_color=TEXT_MAIN
                      ).pack(anchor="w", padx=15, pady=(0, 2))
@@ -687,7 +689,7 @@ class App(ctk.CTk):
                 cb = ctk.CTkSwitch(rf, text="", variable=cv, command=toggle_target, switch_width=36, switch_height=20,
                                    fg_color=RAISED, border_width=1, border_color=TEXT_SUB,
                                    progress_color=PRIMARY, button_color=TEXT_SUB, button_hover_color=TEXT_MAIN,
-                                   corner_radius=CORNER_RADIUS, button_length=0)
+                                   corner_radius=KNOB_RADIUS, button_length=12)
                 cb.pack(side="left", padx=(15, 5), pady=10)
                 
                 fname = os.path.basename(p)
