@@ -13,19 +13,25 @@ import keyboard
 import shutil
 import sys
 
-BG_COLOR = "#141620"
-CARD_COLOR = "#1c1f2b"
-PRIMARY = "#5b9dff"
-PRIMARY_HOVER = "#74acff"
-DANGER = "#ff7a6b"
-DANGER_HOVER = "#ff9a8c"
-TEXT_MAIN = "#eef1f7"
-TEXT_SUB = "#7f889f"
-CORNER_RADIUS = 8
+BG_COLOR = "#14171b"
+CARD_COLOR = "#1b1f24"
+RAISED = "#232830"
+HOVER = "#2b313a"
+HAIRLINE = "#2e343c"
+# The main action is a light fill, not a colour.
+PRIMARY = "#e6e9ec"
+PRIMARY_HOVER = "#f4f6f8"
+# The one colour: the engine has the mouse, or something is stopped or deleted.
+DANGER = "#ff6b4a"
+TEXT_MAIN = "#e6e9ec"
+TEXT_SUB = "#8d96a0"
+CORNER_RADIUS = 0
 
-FONT_MAIN = ("Segoe UI", 11)
-FONT_TITLE = ("Segoe UI", 15, "bold")
-FONT_SUB = ("Segoe UI", 9)
+FONT_MAIN = ("Golos Text", 11)
+FONT_TITLE = ("Golos Text", 18)
+FONT_SUB = ("Golos Text", 10)
+FONT_BTN = ("PT Mono", 10)
+FONT_BTN_LG = ("PT Mono", 12)
 
 def resource_path(n):
     if getattr(sys, 'frozen', False):
@@ -35,6 +41,14 @@ def resource_path(n):
         return os.path.join(os.path.dirname(sys.executable), n)
     return n
 
+def load_fonts():
+    import ctypes
+    for name in ("GolosText-Regular.ttf", "PTMono-Regular.ttf"):
+        path = os.path.abspath(resource_path(os.path.join("fonts", name)))
+        if os.path.exists(path):
+            # FR_PRIVATE: the face exists for this process only, nothing is installed.
+            ctypes.windll.gdi32.AddFontResourceExW(path, 0x10, 0)
+
 if getattr(sys, "frozen", False):
     os.chdir(os.path.dirname(sys.executable))
 else:
@@ -43,52 +57,52 @@ fl_cfg = "phantom_config.json"
 
 STRINGS = {
     "en": {
-        "t": "sv.autoclick", "s": "SNIP", "i": "IMPORT", "f7": "RUN ({k})", "f8": "HALT ({k})", "tb": "TARGET_DB", 
-        "sb": "SYS: STANDBY", "ac": "SYS: ACTIVE", "p": "Settings", "ec": "System Configuration", "im": "Input Protocol:",
+        "t": "sv.autoclick", "s": "Snip", "i": "Import", "f7": "Run ({k})", "f8": "Halt ({k})", "tb": "Targets",  
+        "sb": "Status: standby", "ac": "Status: active",  "p": "Settings", "ec": "System Configuration", "im": "Input Protocol:",
         "act": "Action:", "sen": "Sensitivity: {v:.2f}", "cd": "Cooldown: {v:.1f}s", 
         "hw": "Vision Debug", "rsr": "Set Scan Region", "rrc": "Reset Region",
         "lang": "Language:", "help": "Docs", "h_title": "sv.autoclick - Manual",
-        "h_snip": "• SNIP\n  Captures a region of your screen to use as a target.",
-        "h_import": "• IMPORT\n  Loads existing images (.png, .jpg) into target db.",
-        "h_f7": "• RUN\n  Begins the autonomous scanning engine.",
-        "h_f8": "• HALT\n  Halts the engine immediately.",
-        "h_bank": "• TARGET_DB\n  Toggle switches to enable/disable targets.",
-        "h_click": "• INPUT PROTOCOL\n  'physical' moves the real cursor and clicks. 'background' sends the click straight to the chosen window, so your mouse stays free for other work.",
-        "h_act": "• ACTION\n  Choose left, right, or double click.",
-        "h_sens": "• SENSITIVITY\n  Higher = exact pixel match. Lower = loose recognition.",
-        "h_cd": "• COOLDOWN\n  Delay between consecutive clicks on identical coordinates.",
-        "h_hw": "• VISION DEBUG\n  Opens overlay showing what exactly the script sees.",
-        "h_reg": "• SCAN REGION\n  Limits scanning to specific area, vastly improving FPS.",
-        "stats": "CLICKS: {n} · UPTIME: {t}",
+        "h_snip": "Snip\nCaptures a region of your screen to use as a target.",
+        "h_import": "Import\nLoads existing images (.png, .jpg) into target db.",
+        "h_f7": "Run\nBegins the autonomous scanning engine.",
+        "h_f8": "Halt\nHalts the engine immediately.",
+        "h_bank": "Targets\nToggle switches to enable/disable targets.",
+        "h_click": "Input protocol\n'physical' moves the real cursor and clicks. 'background' sends the click straight to the chosen window, so your mouse stays free for other work.",
+        "h_act": "Action\nChoose left, right, or double click.",
+        "h_sens": "Sensitivity\nHigher = exact pixel match. Lower = loose recognition.",
+        "h_cd": "Cooldown\nDelay between consecutive clicks on identical coordinates.",
+        "h_hw": "Vision debug\nOpens overlay showing what exactly the script sees.",
+        "h_reg": "Scan region\nLimits scanning to specific area, vastly improving FPS.",
+        "stats": "Clicks: {n} · uptime: {t}",
         "limit": "Click limit (0 — unlimited):",
         "hk": "Hotkeys:", "hk_start": "Start", "hk_stop": "Stop",
-        "h_limit": "• CLICK LIMIT\n  Stops the engine after the given number of clicks. 0 keeps it running.",
-        "h_hk": "• HOTKEYS\n  Keys that start and stop the engine. Combinations like ctrl+shift+r also work.",
-        "egg": "SIGNAL INTERCEPTED: The developer of this program probably loves shrimp, hmm... Does it make sense now?"
+        "h_limit": "Click limit\nStops the engine after the given number of clicks. 0 keeps it running.",
+        "h_hk": "Hotkeys\nKeys that start and stop the engine. Combinations like ctrl+shift+r also work.",
+        "egg": "Signal intercepted: the developer of this program probably loves shrimp, hmm... Does it make sense now?"
     },
     "ru": {
-        "t": "sv.autoclick", "s": "СНИМОК", "i": "ИМПОРТ", "f7": "ЗАПУСК ({k})", "f8": "СТОП ({k})", "tb": "БАЗА ЦЕЛЕЙ", 
-        "sb": "СТАТУС: ОЖИДАНИЕ", "ac": "СТАТУС: АКТИВНО", "p": "Настройки", "ec": "Конфигурация", "im": "Протокол ввода:",
+        "t": "sv.autoclick", "s": "Снимок", "i": "Импорт", "f7": "Запуск ({k})", "f8": "Стоп ({k})", "tb": "База целей",  
+        "sb": "Статус: ожидание", "ac": "Статус: активно",  "p": "Настройки", "ec": "Конфигурация", "im": "Протокол ввода:",
         "act": "Действие:", "sen": "Чувствительность: {v:.2f}", "cd": "Задержка: {v:.1f}s", 
         "hw": "Отладка зрения (Debug)", "rsr": "Задать зону сканирования", "rrc": "Сбросить зону",
         "lang": "Язык:", "help": "Справка", "h_title": "sv.autoclick - Руководство",
-        "h_snip": "• СНИМОК\n  Вырезает фрагмент экрана и сохраняет как цель.",
-        "h_import": "• ИМПОРТ\n  Загрузка сторонних файлов (.png, .jpg) в базу.",
-        "h_f7": "• ЗАПУСК\n  Активирует ядро технического зрения.",
-        "h_f8": "• СТОП\n  Экстренная остановка всех процессов.",
-        "h_bank": "• БАЗА ЦЕЛЕЙ\n  Управление целями. Отключите тумблер, чтобы игнорировать файл.",
-        "h_click": "• ПРОТОКОЛ ВВОДА\n  'physical' двигает настоящий курсор и кликает. 'background' отправляет клик прямо в выбранное окно, поэтому мышь остаётся свободной.",
-        "h_act": "• ДЕЙСТВИЕ\n  Левый, Правый клик или Двойной.",
-        "h_sens": "• ЧУВСТВИТЕЛЬНОСТЬ\n  Высокая = строгий поиск. Низкая = находит похожие пиксели.",
-        "h_cd": "• ЗАДЕРЖКА\n  Перерыв между повторными кликами в ту же цель.",
-        "h_hw": "• ОТЛАДКА ЗРЕНИЯ\n  Окно отладки. Показывает алгоритм распознавания CV2.",
-        "h_reg": "• ЗОНА СКАНИРОВАНИЯ\n  Сужает радиус поиска, многократно повышая FPS.",
-        "stats": "КЛИКОВ: {n} · В РАБОТЕ: {t}",
+        "h_snip": "Снимок\nВырезает фрагмент экрана и сохраняет как цель.",
+        "h_import": "Импорт\nЗагрузка сторонних файлов (.png, .jpg) в базу.",
+        "h_f7": "Запуск\nАктивирует ядро технического зрения.",
+        "h_f8": "Стоп\nЭкстренная остановка всех процессов.",
+        "h_bank": "База целей\nУправление целями. Отключите тумблер, чтобы игнорировать файл.",
+        "h_click": "Протокол ввода\n'physical' двигает настоящий курсор и кликает. 'background' отправляет клик прямо в выбранное окно, поэтому мышь остаётся свободной.",
+        "h_act": "Действие\nЛевый, Правый клик или Двойной.",
+        "h_sens": "Чувствительность\nВысокая = строгий поиск. Низкая = находит похожие пиксели.",
+        "h_cd": "Задержка\nПерерыв между повторными кликами в ту же цель.",
+        "h_hw": "Отладка зрения\nОкно отладки. Показывает алгоритм распознавания CV2.",
+        "h_reg": "Зона сканирования\nСужает радиус поиска, многократно повышая FPS.",
+        "stats": "Кликов: {n} · в работе: {t}",
         "limit": "Лимит кликов (0 — без лимита):",
         "hk": "Горячие клавиши:", "hk_start": "Запуск", "hk_stop": "Стоп",
-        "h_limit": "• ЛИМИТ КЛИКОВ\n  Останавливает движок после указанного числа кликов. 0 — работать без предела.",
-        "h_hk": "• ГОРЯЧИЕ КЛАВИШИ\n  Клавиши запуска и остановки. Работают и сочетания вида ctrl+shift+r.",
-        "egg": "ПЕРЕХВАТ СИГНАЛА: Наверное разработчик этой программы любит креветки, хмм, есть ли в этом смысл?"
+        "h_limit": "Лимит кликов\nОстанавливает движок после указанного числа кликов. 0 — работать без предела.",
+        "h_hk": "Горячие клавиши\nКлавиши запуска и остановки. Работают и сочетания вида ctrl+shift+r.",
+        "egg": "Перехват сигнала: наверное разработчик этой программы любит креветки, хмм, есть ли в этом смысл?"
     }
 }
 
@@ -149,7 +163,7 @@ class ClickEngine:
             self.started_at = time.time()
             l = self.p.get("lang")
             if l not in STRINGS: l = "en"
-            self.cb(STRINGS[l]["ac"], PRIMARY)
+            self.cb(STRINGS[l]["ac"], DANGER)
             threading.Thread(target=self._scan_loop, daemon=True).start()
 
     def stop(self):
@@ -319,15 +333,15 @@ class App(ctk.CTk):
         self.l_t.pack(side="left")
         self.l_t.bind("<Button-1>", self._title_click)
         
-        self.b_hz = ctk.CTkButton(h_top, text="?", width=32, height=32, font=FONT_MAIN, 
-                                  fg_color=CARD_COLOR, hover_color="#252a38", text_color=TEXT_SUB, 
-                                  command=self.open_help, corner_radius=CORNER_RADIUS)
+        self.b_hz = ctk.CTkButton(h_top, text="", width=0, height=32, font=FONT_BTN,
+                                  fg_color="transparent", border_width=1, border_color=HAIRLINE, hover_color=HOVER,
+                                  text_color=TEXT_MAIN, command=self.open_help, corner_radius=CORNER_RADIUS)
         self.b_hz.pack(side="right", padx=(5, 0))
         
-        self.b_cfg = ctk.CTkButton(h_top, text="⚙", width=32, height=32, font=("Segoe UI", 16), 
-                                   fg_color=CARD_COLOR, hover_color="#252a38", text_color=TEXT_SUB, 
-                                   command=self.open_settings, corner_radius=CORNER_RADIUS)
-        self.b_cfg.pack(side="right")
+        self.b_cfg = ctk.CTkButton(h_top, text="", width=0, height=32, font=FONT_BTN,
+                                   fg_color="transparent", border_width=1, border_color=HAIRLINE, hover_color=HOVER,
+                                   text_color=TEXT_MAIN, command=self.open_settings, corner_radius=CORNER_RADIUS)
+        self.b_cfg.pack(side="right", padx=(5, 0))
         
         t_card = ctk.CTkFrame(self, fg_color=CARD_COLOR, corner_radius=CORNER_RADIUS)
         t_card.pack(fill="both", expand=True, padx=15, pady=(10, 15))
@@ -338,17 +352,18 @@ class App(ctk.CTk):
         self.l_tb = ctk.CTkLabel(t_head, text="", font=FONT_MAIN, text_color=TEXT_MAIN)
         self.l_tb.pack(side="left")
         
-        self.b_imp = ctk.CTkButton(t_head, text="", width=60, font=("Segoe UI", 11, "bold"), fg_color="#282e3d", 
-                                   hover_color="#2a2f3f", text_color=TEXT_MAIN, 
+        self.b_imp = ctk.CTkButton(t_head, text="", width=60, font=FONT_BTN, fg_color="transparent",
+                                   border_width=1, border_color=HAIRLINE, hover_color=HOVER, text_color=TEXT_MAIN, 
                                    command=self.import_targets, corner_radius=CORNER_RADIUS, height=28)
         self.b_imp.pack(side="right")
         
-        self.b_snip = ctk.CTkButton(t_head, text="", width=60, font=("Segoe UI", 11, "bold"), fg_color=PRIMARY, 
-                                    hover_color=PRIMARY_HOVER, text_color="#141620", 
+        self.b_snip = ctk.CTkButton(t_head, text="", width=60, font=FONT_BTN, fg_color=PRIMARY,
+                                    hover_color=PRIMARY_HOVER, text_color=BG_COLOR, 
                                     command=self.snip_target, corner_radius=CORNER_RADIUS, height=28)
         self.b_snip.pack(side="right", padx=(0, 5))
 
-        self.targets_frame = ctk.CTkScrollableFrame(t_card, fg_color="transparent")
+        self.targets_frame = ctk.CTkScrollableFrame(t_card, fg_color="transparent", corner_radius=CORNER_RADIUS,
+                                                    scrollbar_button_color=HAIRLINE, scrollbar_button_hover_color=TEXT_SUB)
         self.targets_frame.pack(fill="both", expand=True, padx=5, pady=(0, 10))
         self.refresh_targets()
         
@@ -361,13 +376,13 @@ class App(ctk.CTk):
         ab = ctk.CTkFrame(a_card, fg_color="transparent")
         ab.pack(fill="x", padx=15, pady=(5, 15))
 
-        self.btn_start = ctk.CTkButton(ab, text="", font=("Segoe UI", 15, "bold"), fg_color=PRIMARY, 
-                                  hover_color=PRIMARY_HOVER, text_color="#141620", 
+        self.btn_start = ctk.CTkButton(ab, text="", font=FONT_BTN_LG, fg_color=PRIMARY,
+                                  hover_color=PRIMARY_HOVER, text_color=BG_COLOR, 
                                   command=self.engine.start, corner_radius=CORNER_RADIUS, height=45)
         self.btn_start.pack(side="left", expand=True, fill="x", padx=(0, 5))
         
-        self.btn_stop = ctk.CTkButton(ab, text="", font=("Segoe UI", 15, "bold"), fg_color="transparent", 
-                                  border_color=DANGER, border_width=2, hover_color="#48242a", text_color=DANGER, 
+        self.btn_stop = ctk.CTkButton(ab, text="", font=FONT_BTN_LG, fg_color="transparent",
+                                  border_color=DANGER, border_width=1, hover_color=HOVER, text_color=DANGER, 
                                   command=self.engine.stop, corner_radius=CORNER_RADIUS, height=45)
         self.btn_stop.pack(side="right", expand=True, fill="x", padx=(5, 0))
 
@@ -382,10 +397,11 @@ class App(ctk.CTk):
         s.attributes('-topmost', True)
         s.after(200, lambda: self.apply_icon(s))
         
-        scr = ctk.CTkScrollableFrame(s, fg_color=BG_COLOR)
+        scr = ctk.CTkScrollableFrame(s, fg_color=BG_COLOR, corner_radius=CORNER_RADIUS,
+                                     scrollbar_button_color=HAIRLINE, scrollbar_button_hover_color=TEXT_SUB)
         scr.pack(fill="both", expand=True, padx=15, pady=15)
         
-        ctk.CTkLabel(scr, text=d["h_title"], font=FONT_TITLE, text_color=PRIMARY).pack(pady=(10, 20))
+        ctk.CTkLabel(scr, text=d["h_title"], font=FONT_TITLE, text_color=TEXT_MAIN).pack(pady=(10, 20), anchor="w", padx=15)
         
         hi = [
             "h_snip", "h_import", "h_f7", "h_f8", "h_bank", "h_click",
@@ -402,6 +418,8 @@ class App(ctk.CTk):
         if lg not in STRINGS: lg = "en"
         d = STRINGS[lg]
         self.l_t.configure(text=d["t"])
+        self.b_hz.configure(text=d["help"])
+        self.b_cfg.configure(text=d["p"])
         self.b_snip.configure(text=d["s"])
         self.b_imp.configure(text=d["i"])
         self.btn_start.configure(text=d["f7"].format(k=(self.cfg.get("hotkey_start") or "f7").upper()))
@@ -410,7 +428,7 @@ class App(ctk.CTk):
         if not self.engine.running:
             self.status_label.configure(text=d["sb"], text_color=TEXT_SUB)
         else:
-            self.status_label.configure(text=d["ac"], text_color=PRIMARY)
+            self.status_label.configure(text=d["ac"], text_color=DANGER)
 
     def import_targets(self):
         from customtkinter import filedialog
@@ -450,7 +468,7 @@ class App(ctk.CTk):
             self.status_label.configure(
                 text=self.strings()["stats"].format(
                     n=self.engine.clicks, t=f"{secs // 60:02d}:{secs % 60:02d}"),
-                text_color=PRIMARY)
+                text_color=DANGER)
         self.after(500, self.tick_stats)
 
     def save_limit(self, widget):
@@ -488,7 +506,8 @@ class App(ctk.CTk):
         s.attributes('-topmost', True)
         s.after(200, lambda: self.apply_icon(s))
             
-        scr = ctk.CTkScrollableFrame(s, fg_color=BG_COLOR)
+        scr = ctk.CTkScrollableFrame(s, fg_color=BG_COLOR, corner_radius=CORNER_RADIUS,
+                                     scrollbar_button_color=HAIRLINE, scrollbar_button_hover_color=TEXT_SUB)
         scr.pack(fill="both", expand=True)
 
         ctk.CTkLabel(scr, text=d["ec"], font=FONT_TITLE, text_color=TEXT_MAIN).pack(pady=(20, 15), anchor="w", padx=15)
@@ -503,9 +522,9 @@ class App(ctk.CTk):
             s.destroy()
             self.open_settings()
         cl = ctk.CTkComboBox(c1, values=["ru", "en"], variable=lv, font=FONT_MAIN, 
-                             fg_color="#252a38", border_width=0, button_color="#252a38", 
-                             button_hover_color="#282e3d", text_color=TEXT_MAIN, corner_radius=CORNER_RADIUS, 
-                             command=on_language, dropdown_fg_color=CARD_COLOR, dropdown_hover_color="#282e3d", dropdown_text_color=TEXT_MAIN)
+                             fg_color=BG_COLOR, border_width=1, border_color=HAIRLINE, button_color=BG_COLOR,  
+                             button_hover_color=HOVER, text_color=TEXT_MAIN, corner_radius=CORNER_RADIUS,
+                             command=on_language, dropdown_fg_color=RAISED, dropdown_hover_color=HOVER, dropdown_text_color=TEXT_MAIN)
         cl.pack(fill="x", padx=15, pady=(0, 15))
         
         c2 = ctk.CTkFrame(scr, fg_color=CARD_COLOR, corner_radius=CORNER_RADIUS)
@@ -514,21 +533,22 @@ class App(ctk.CTk):
         ctk.CTkLabel(c2, text=d["im"], font=FONT_SUB, text_color=TEXT_SUB).pack(anchor="w", padx=15, pady=(15, 5))
         mv = ctk.StringVar(value=self.cfg.get("click_mode"))
         cb = ctk.CTkComboBox(c2, values=["background", "physical"], variable=mv, font=FONT_MAIN, 
-                             fg_color="#252a38", border_width=0, button_color="#252a38", button_hover_color="#282e3d", text_color=TEXT_MAIN, corner_radius=CORNER_RADIUS, 
-                             command=lambda v: self.cfg.set_value("click_mode", v), dropdown_fg_color=CARD_COLOR, dropdown_hover_color="#282e3d")
+                             fg_color=BG_COLOR, border_width=1, border_color=HAIRLINE, button_color=BG_COLOR,  button_hover_color=HOVER, text_color=TEXT_MAIN, corner_radius=CORNER_RADIUS,
+                             command=lambda v: self.cfg.set_value("click_mode", v), dropdown_fg_color=RAISED, dropdown_hover_color=HOVER, dropdown_text_color=TEXT_MAIN)
         cb.pack(fill="x", padx=15, pady=(0, 10))
         
         ctk.CTkLabel(c2, text=d["act"], font=FONT_SUB, text_color=TEXT_SUB).pack(anchor="w", padx=15, pady=5)
         av = ctk.StringVar(value=self.cfg.get("action"))
         cab = ctk.CTkComboBox(c2, values=["left_click", "right_click", "double_click"], variable=av, font=FONT_MAIN, 
-                              fg_color="#252a38", border_width=0, button_color="#252a38", button_hover_color="#282e3d", text_color=TEXT_MAIN, corner_radius=CORNER_RADIUS, 
-                              command=lambda v: self.cfg.set_value("action", v), dropdown_fg_color=CARD_COLOR, dropdown_hover_color="#282e3d")
+                              fg_color=BG_COLOR, border_width=1, border_color=HAIRLINE, button_color=BG_COLOR,  button_hover_color=HOVER, text_color=TEXT_MAIN, corner_radius=CORNER_RADIUS,
+                              command=lambda v: self.cfg.set_value("action", v), dropdown_fg_color=RAISED, dropdown_hover_color=HOVER, dropdown_text_color=TEXT_MAIN)
         cab.pack(fill="x", padx=15, pady=(0, 10))
         
         sv = ctk.StringVar(value=d["sen"].format(v=self.cfg.get('sensitivity')))
         sl_lbl = ctk.CTkLabel(c2, textvariable=sv, font=FONT_SUB, text_color=TEXT_SUB)
         sl_lbl.pack(anchor="w", padx=15, pady=5)
-        sens_slider = ctk.CTkSlider(c2, from_=0.1, to=1.0, button_color=PRIMARY, button_hover_color=PRIMARY_HOVER, progress_color=PRIMARY, 
+        sens_slider = ctk.CTkSlider(c2, from_=0.1, to=1.0, button_color=PRIMARY, button_hover_color=PRIMARY_HOVER, progress_color=PRIMARY, fg_color=HAIRLINE,
+                           corner_radius=CORNER_RADIUS, button_corner_radius=CORNER_RADIUS,  
                            command=lambda v: (sv.set(d["sen"].format(v=float(v))), self.cfg.set_value("sensitivity", float(v))))
         sens_slider.set(self.cfg.get("sensitivity"))
         sens_slider.pack(fill="x", padx=15, pady=(0, 10))
@@ -536,7 +556,8 @@ class App(ctk.CTk):
         cv = ctk.StringVar(value=d["cd"].format(v=self.cfg.get('cooldown')))
         c_lbl = ctk.CTkLabel(c2, textvariable=cv, font=FONT_SUB, text_color=TEXT_SUB)
         c_lbl.pack(anchor="w", padx=15, pady=5)
-        c_l = ctk.CTkSlider(c2, from_=0.0, to=5.0, button_color=PRIMARY, button_hover_color=PRIMARY_HOVER, progress_color=PRIMARY, 
+        c_l = ctk.CTkSlider(c2, from_=0.0, to=5.0, button_color=PRIMARY, button_hover_color=PRIMARY_HOVER, progress_color=PRIMARY, fg_color=HAIRLINE,
+                           corner_radius=CORNER_RADIUS, button_corner_radius=CORNER_RADIUS,  
                             command=lambda v: (cv.set(d["cd"].format(v=float(v))), self.cfg.set_value("cooldown", float(v))))
         c_l.set(self.cfg.get("cooldown"))
         c_l.pack(fill="x", padx=15, pady=(0, 15))
@@ -545,13 +566,14 @@ class App(ctk.CTk):
         c3.pack(fill="x", padx=15, pady=5)
         
         dv = ctk.BooleanVar(value=self.cfg.get("debug"))
-        ctk.CTkSwitch(c3, text=d["hw"], variable=dv, font=FONT_MAIN, 
-                      command=lambda: self.cfg.set_value("debug", dv.get()), 
-                      progress_color=PRIMARY, button_color=TEXT_MAIN, button_hover_color=TEXT_MAIN, text_color=TEXT_MAIN).pack(anchor="w", padx=15, pady=(5, 15))
+        ctk.CTkSwitch(c3, text=d["hw"], variable=dv, font=FONT_MAIN,
+                      command=lambda: self.cfg.set_value("debug", dv.get()),
+                      fg_color=HAIRLINE, progress_color=PRIMARY, button_color=TEXT_SUB, button_hover_color=TEXT_MAIN,
+                      corner_radius=CORNER_RADIUS, button_length=0, text_color=TEXT_MAIN).pack(anchor="w", padx=15, pady=(5, 15))
         
         ctk.CTkLabel(c3, text=d["limit"], font=FONT_MAIN, text_color=TEXT_MAIN
                      ).pack(anchor="w", padx=15, pady=(0, 2))
-        lim = ctk.CTkEntry(c3, font=FONT_MAIN, fg_color=BG_COLOR, border_color="#2a2f3f",
+        lim = ctk.CTkEntry(c3, font=FONT_MAIN, fg_color=BG_COLOR, border_color=HAIRLINE, corner_radius=CORNER_RADIUS,
                            text_color=TEXT_MAIN, height=32)
         lim.insert(0, str(self.cfg.get("click_limit") or 0))
         lim.pack(fill="x", padx=15, pady=(0, 10))
@@ -566,7 +588,7 @@ class App(ctk.CTk):
             box = ctk.CTkFrame(hk_row, fg_color="transparent")
             box.pack(side="left", expand=True, fill="x", padx=(0, 8))
             ctk.CTkLabel(box, text=caption, font=FONT_SUB, text_color=TEXT_SUB).pack(anchor="w")
-            field = ctk.CTkEntry(box, font=FONT_MAIN, fg_color=BG_COLOR, border_color="#2a2f3f",
+            field = ctk.CTkEntry(box, font=FONT_MAIN, fg_color=BG_COLOR, border_color=HAIRLINE, corner_radius=CORNER_RADIUS,
                                  text_color=TEXT_MAIN, height=32)
             field.insert(0, self.cfg.get(key) or "")
             field.pack(fill="x")
@@ -575,9 +597,11 @@ class App(ctk.CTk):
 
         c4 = ctk.CTkFrame(scr, fg_color="transparent")
         c4.pack(fill="x", padx=15, pady=15)
-        ctk.CTkButton(c4, text=d["rsr"], font=FONT_MAIN, fg_color="#282e3d", hover_color="#2a2f3f", text_color=TEXT_MAIN, 
+        ctk.CTkButton(c4, text=d["rsr"], font=FONT_BTN, fg_color="transparent", border_width=1, border_color=HAIRLINE,
+                      hover_color=HOVER, text_color=TEXT_MAIN, 
                       corner_radius=CORNER_RADIUS, height=40, command=self.set_scan_region).pack(fill="x", pady=(0, 10))
-        ctk.CTkButton(c4, text=d["rrc"], font=FONT_MAIN, fg_color="transparent", border_color=DANGER, border_width=1, hover_color="#48242a", text_color=DANGER, 
+        ctk.CTkButton(c4, text=d["rrc"], font=FONT_BTN, fg_color="transparent", border_color=DANGER, border_width=1,
+                      hover_color=HOVER, text_color=DANGER, 
                       corner_radius=CORNER_RADIUS, height=40, command=lambda: self.cfg.set_value("region", None)).pack(fill="x", pady=(0, 10))
 
     def region_overlay(self, cb):
@@ -636,7 +660,7 @@ class App(ctk.CTk):
             p = pt["path"]
             if os.path.exists(p):
                 vt.append(pt)
-                rf = ctk.CTkFrame(self.targets_frame, fg_color="#252a38", corner_radius=CORNER_RADIUS)
+                rf = ctk.CTkFrame(self.targets_frame, fg_color=RAISED, corner_radius=CORNER_RADIUS)
                 rf.pack(fill="x", pady=5)
                 
                 cv = ctk.BooleanVar(value=pt.get("active", True))
@@ -647,16 +671,17 @@ class App(ctk.CTk):
                             break
                     self.cfg.save()
                     
-                cb = ctk.CTkSwitch(rf, text="", variable=cv, command=toggle_target, switch_width=36, switch_height=20, 
-                                   progress_color=PRIMARY, button_color=TEXT_MAIN, button_hover_color=TEXT_MAIN)
+                cb = ctk.CTkSwitch(rf, text="", variable=cv, command=toggle_target, switch_width=36, switch_height=20,
+                                   fg_color=HAIRLINE, progress_color=PRIMARY, button_color=TEXT_SUB, button_hover_color=TEXT_MAIN,
+                                   corner_radius=CORNER_RADIUS, button_length=0)
                 cb.pack(side="left", padx=(15, 5), pady=10)
                 
                 fname = os.path.basename(p)
                 if len(fname) > 22: fname = fname[:10] + "..." + fname[-8:]
                 
                 ctk.CTkLabel(rf, text=fname, font=FONT_MAIN, text_color=TEXT_MAIN).pack(side="left", padx=5, pady=10)
-                ctk.CTkButton(rf, text="✕", width=30, height=30, fg_color="transparent", hover_color="#48242a", text_color=DANGER, 
-                              font=("Segoe UI", 16), corner_radius=CORNER_RADIUS, command=lambda x=pt: self.remove_target(x)).pack(side="right", padx=10, pady=10)
+                ctk.CTkButton(rf, text="✕", width=30, height=30, fg_color="transparent", hover_color=HOVER, text_color=DANGER, 
+                              font=FONT_MAIN, corner_radius=CORNER_RADIUS, command=lambda x=pt: self.remove_target(x)).pack(side="right", padx=10, pady=10)
         
         if len(vt) != len(ts):
             self.cfg.set_value("targets", vt)
@@ -678,5 +703,6 @@ class App(ctk.CTk):
 
 if __name__ == "__main__":
     ctk.set_appearance_mode("dark")
+    load_fonts()
     c = App()
     c.mainloop()

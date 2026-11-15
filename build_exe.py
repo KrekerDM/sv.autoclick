@@ -8,7 +8,7 @@ import time
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 NAME = "sv.autoclick"
-VERSION = "1.1.0"
+VERSION = "1.2.0"
 DIST = os.path.join(ROOT, "release")
 WORK = os.path.join(ROOT, "build")
 
@@ -28,6 +28,7 @@ def build(clean: bool) -> int:
         "--workpath", WORK,
         "--specpath", WORK,
         "--add-data", f"{os.path.join(ROOT, 'logo.ico')}{os.pathsep}.",
+        "--add-data", f"{os.path.join(ROOT, 'fonts')}{os.pathsep}fonts",
         "--collect-all", "customtkinter",
     ]
     if clean:
